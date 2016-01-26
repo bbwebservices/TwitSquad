@@ -27,24 +27,28 @@ var SuperTwitBotBeta = React.createClass({
         username: '',
         password: '',
         current_route: null,
-        twitter_accounts: [
-          {
-            name: 'Brunelli Beats',
-            description: 'Make Beats Yo'
-          },
-          {
-            name: 'BB Web Services',
-            description: 'make sites yo'
-
-          },
-          {
-            name: 'Cats Are Assholes',
-            description: 'cats suck yo'
-          }
-        ],
+        twitter_accounts: null,
         current_account: null
         
       }
+    },
+
+    componentWillMount: function () {
+      fetch('http://localhost:3000/accounts/1.json')
+        .then((response) => response.json())
+        .then((responseData) => {
+          console.log(responseData);
+         this.setState({
+          twitter_accounts:[
+            {
+              name: responseData.name,
+              id: responseData.id
+            }
+          ]
+         })
+         console.log('state: ', this.state);
+        })
+        .done();
     },
 
     saveId: function (id) {
@@ -55,7 +59,7 @@ var SuperTwitBotBeta = React.createClass({
         return false;
       })
 
-      console.log('current account', currAcct);
+      console.log('current account', currAcct());
     },
 
     setUser: function (input) {
@@ -68,7 +72,7 @@ var SuperTwitBotBeta = React.createClass({
 
     checkCreds: function () {  
     // need to update this for correct routes    
-      fetch('/', {
+      fetch('/accounts.json', {
         method: 'post',
         headers: {
           'Accept': 'application/json',
@@ -79,6 +83,12 @@ var SuperTwitBotBeta = React.createClass({
           password: this.state.password
         })
       })
+
+    },
+
+    getAccts: function () {
+
+      console.log('get accts');
 
     },
 
@@ -149,7 +159,10 @@ var SuperTwitBotBeta = React.createClass({
                    twitterAccounts={this.state.twitter_accounts}
                    currentAccount={this.state.current_account}
                    saveId={this.saveId}
-                   {...route.props} navigator={navigator} route={route} />
+                   getAccts={this.getAccts} 
+                   {...route.props} 
+                   navigator={navigator} 
+                   route={route} />
       )
     },
  

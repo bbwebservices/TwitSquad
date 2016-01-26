@@ -17,15 +17,14 @@ var AccountChoice = React.createClass({
 		this.props.navigator.push({
         	component: TweetPage,
         	title: 'Account Management',
-        	passProps: {
-        		username: this.props.username,
-        		password: this.props.password,
-        		twitterAccounts: this.props.twitterAccounts,
-        		currentAccount: this.props.currentAccount,
-        		saveId: this.props.saveId
-        	}
+        	// passProps: {
+        	// 	username: this.props.username,
+        	// 	password: this.props.password,
+        	// 	twitterAccounts: this.props.twitterAccounts,
+        	// 	currentAccount: this.props.currentAccount,
+        	// 	saveId: this.props.saveId
+        	// }
       	})
-
 	},
 
 	render: function () {
@@ -44,7 +43,7 @@ var AccountChoice = React.createClass({
 						scrollEventThrottle={200}
 						>
 						{this.props.twitterAccounts.map(function (acct) {
-							return <TouchableHighlight onPress={this.goToTweetPage, this.props.saveId} style={styles.listItem}><Text>{acct.name}</Text></TouchableHighlight>
+							return <TouchableHighlight onPress={this.props.saveId, this.goToTweetPage} style={styles.listItem}><Text>{acct.name}</Text></TouchableHighlight>
 						}.bind(this))}
 					</ScrollView>
 					
