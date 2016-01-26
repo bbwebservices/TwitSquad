@@ -28,25 +28,19 @@ var SuperTwitBotBeta = React.createClass({
         password: '',
         current_route: null,
         twitter_accounts: null,
-        current_account: null
-        
+        current_account_token: null
       }
     },
 
     componentWillMount: function () {
-      fetch('http://localhost:3000/accounts/1.json')
+      fetch('https://damp-wave-78637.herokuapp.com/accounts')
         .then((response) => response.json())
         .then((responseData) => {
-          console.log(responseData);
-         this.setState({
-          twitter_accounts:[
-            {
-              name: responseData.name,
-              id: responseData.id
-            }
-          ]
-         })
-         console.log('state: ', this.state);
+          console.log('responseData: ', responseData);
+          this.setState({
+            twitter_accounts: responseData
+          })
+          console.log('state: ', this.state);
         })
         .done();
     },
