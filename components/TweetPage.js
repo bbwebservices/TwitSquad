@@ -13,7 +13,7 @@ var TweetPage = React.createClass({
 	render: function () {
 		return (
 			<View style={styles.container}>
-				<Text>Name: hey </Text>
+				<Text>Name: yoooo </Text>
 				<Text>Profile: hey </Text>
 			</View>
 		)

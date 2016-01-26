@@ -15,21 +15,22 @@ var {
 var Login = React.createClass({
 	
 	goToAccountsPage: function () {
+		
       	this.props.navigator.push({
-        	component: AccountChoice,
-        	title: 'Account Choice',
-        	passProps: {
-        		username: this.props.username,
-        		password: this.props.password,
-        		twitterAccounts: this.props.twitterAccounts,
-        		saveId: this.props.saveId
-        	}
-      	})
+            component: AccountChoice,
+            title: 'Account Choice'
+        })
+
+    },
+
+    componentWillUnmount: function () {
+    	
     },
 
 	render: function () {
 		return (
             <View style={styles.container}>
+
               <Text style={styles.introText}>Welcome to Super Twitter Bot Beta!</Text>
               <Text style={styles.intoSubText}>to continue, please enter your username and password</Text>
 
@@ -42,16 +43,17 @@ var Login = React.createClass({
               <TouchableHighlight>
                 <TextInput style={styles.textInput} onChangeText={this.props.setPassword} />    
               </TouchableHighlight>
-              
+
               <View style={styles.buttonCont}>
                 
                 <TouchableHighlight style={styles.button}>
                  <Text>Sign Up</Text>  
                 </TouchableHighlight>
 
-                <TouchableHighlight style={styles.button} onPress={this.goToAccountsPage}>
+                <TouchableHighlight style={styles.button} onPress={ this.props.getAccts, this.goToAccountsPage }>
                  <Text>Login</Text>  
                 </TouchableHighlight>
+
               </View>
 
             </View>
