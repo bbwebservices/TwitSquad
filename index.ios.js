@@ -34,7 +34,7 @@ var SuperTwitBotBeta = React.createClass({
     },
 
     componentWillMount: function () {
-      fetch('http://localhost:3000/accounts/1.json')
+      fetch('https://damp-wave-78637.herokuapp.com/accounts/accounts/1.json')
         .then((response) => response.json())
         .then((responseData) => {
           console.log(responseData);
@@ -131,7 +131,7 @@ var SuperTwitBotBeta = React.createClass({
     },
  
     _onPressButtonFOLLOW: function() {
-        fetch("http://localhost:3000/accounts/1/follow_tweeters", {method: "GET"})
+        fetch("https://damp-wave-78637.herokuapp.com/accounts/1/follow_tweeters", {method: "GET"})
         .then((response) => response.json())
         .then((responseData) => {
             AlertIOS.alert(
