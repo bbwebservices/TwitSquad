@@ -16,13 +16,15 @@ var Login = React.createClass({
 	
 	goToAccountsPage: function () {
 		console.log('CREDS', this.props)
+
+		// **********THIS IS WHERE WE NEED TO CHECK THE CREDS**********
 		if(true){
 			this.props.navigator.push({
 	            component: AccountChoice,
 	            title: 'Account Choice'
 	        })
 		} else {
-			AlertIOS.alert('sorry!');
+			AlertIOS.alert('sorry, ur creds suck!');
 		}
       	
 
