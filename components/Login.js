@@ -15,11 +15,16 @@ var {
 var Login = React.createClass({
 	
 	goToAccountsPage: function () {
-		
-      	this.props.navigator.push({
-            component: AccountChoice,
-            title: 'Account Choice'
-        })
+		console.log('CREDS', this.props)
+		if(true){
+			this.props.navigator.push({
+	            component: AccountChoice,
+	            title: 'Account Choice'
+	        })
+		} else {
+			AlertIOS.alert('sorry!');
+		}
+      	
 
         // Add route id to each Account
         var routeNum = 1
@@ -59,7 +64,7 @@ var Login = React.createClass({
                  <Text>Sign Up</Text>  
                 </TouchableHighlight>
 
-                <TouchableHighlight style={styles.button} onPress={ this.props.checkCreds }>
+                <TouchableHighlight style={styles.button} onPress={ this.props.checkCreds, this.goToAccountsPage }>
                  <Text>Login</Text>  
                 </TouchableHighlight>
 

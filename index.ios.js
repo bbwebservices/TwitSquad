@@ -83,7 +83,6 @@ var SuperTwitBotBeta = React.createClass({
             user_headers: response.headers
           })
           console.log('user_headers ', this.state.user_headers.map);
-
         })
         .then((responseData) => {
           this.setHead(this.state.user_headers);
@@ -108,12 +107,13 @@ var SuperTwitBotBeta = React.createClass({
                   ['expiry']: this.state.expiry, 
                   ['token-type']: this.state.token_type,
                   ['uid']: this.state.uid }
-      console.log(headers);
+      console.log('HEADERS! ', headers);
       this.state.user_headers = headers;
       return headers;
     },
 
     getAccts: function () {
+
       console.log('get accts');
       fetch('http://damp-wave-78637.herokuapp.com/accounts', {
         method: 'GET',
@@ -126,7 +126,8 @@ var SuperTwitBotBeta = React.createClass({
               })
             })
             .done();
-      console.log('twitter accts: ', this.state.twitter_accounts)
+      console.log('twitter accts: ', this.state.twitter_accounts);
+
     },
 
     setHeaders: function () {
@@ -255,6 +256,7 @@ var SuperTwitBotBeta = React.createClass({
                    saveTerm={this.saveTerm}
                    removeTerm={this.removeTerm}
                    checkCreds={this.checkCreds}
+                   accessToken={this.state.access_token}
                    {...route.props} 
                    navigator={navigator} 
                    route={route} />
