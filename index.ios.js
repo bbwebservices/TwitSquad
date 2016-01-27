@@ -1,6 +1,6 @@
 /**
  * Sample React Native App
- * https://github.com/facebook/react-native
+ * http://github.com/facebook/react-native
  */
 'use strict';
  
@@ -21,7 +21,7 @@ var {
 } = React;
 
 var url1 = 'http://localhost:3000'
-var url2 = 'https://damp-wave-78637.herokuapp.com'
+var url2 = 'http://damp-wave-78637.herokuapp.com'
  
 var SuperTwitBotBeta = React.createClass({
 
@@ -35,12 +35,17 @@ var SuperTwitBotBeta = React.createClass({
         current_account: null,
         current_account_token: null,
         term_to_add: null,
-        count_to_add: null
+        count_to_add: null,
+        access_token: null,
+        expiry: null,
+        uid: null,
+        client: null,
+        token_type: null
       }
     },
 
     componentWillMount: function () {
-      fetch('https://damp-wave-78637.herokuapp.com/accounts')
+      fetch('http://damp-wave-78637.herokuapp.com/accounts')
         .then((response) => response.json())
         .then((responseData) => {
           this.setState({
@@ -81,17 +86,38 @@ var SuperTwitBotBeta = React.createClass({
 
         })
         .then((responseData) => {
-            console.log('State: ', this.state.user_headers.map['access-token'][0]);
-            this.getAccts();
+          this.setHead(this.state.user_headers);
+          console.log("sethead!" + this.state.user_headers);
+          this.getAccts();
         })
         .done();
+    },
+    setHead: function (arr) {
+      console.log(arr);
+      var headers = {};
+      if(arr){
+        this.state.access_token = arr.map['access-token'];
+        this.state.client = arr.map['client'];
+        this.state.expiry = arr.map['expiry'];
+        this.state.token_type = arr.map['token-type'];
+        this.state.uid = arr.map['uid'];
+        console.log(this.state.access_token);
+      }
+      headers = { ['access-token']: this.state.access_token, 
+                  ['client']: this.state.client, 
+                  ['expiry']: this.state.expiry, 
+                  ['token-type']: this.state.token_type,
+                  ['uid']: this.state.uid }
+      console.log(headers);
+      this.state.user_headers = headers;
+      return headers;
     },
 
     getAccts: function () {
       console.log('get accts');
-      fetch('https://damp-wave-78637.herokuapp.com/accounts', {
+      fetch('http://damp-wave-78637.herokuapp.com/accounts', {
         method: 'GET',
-        headers: this.state.user_headers.map 
+        headers: this.state.user_headers
       })
             .then((response) => response.json())
             .then((responseData) => {
@@ -118,11 +144,6 @@ var SuperTwitBotBeta = React.createClass({
         .done();
     },
 
-
-    setCurrentAccount: function () {
-
-    },
-
     addTerm: function (text) {
       this.setState({
         term_to_add: text
@@ -141,7 +162,7 @@ var SuperTwitBotBeta = React.createClass({
         console.log('term: ', this.state.term_to_add);
         console.log('count: ', this.state.count_to_add);
 
-        fetch('https://damp-wave-78637.herokuapp.com/accounts/'+this.state.current_account.route+'/add_term?utf8=%E2%9C%93&body='+this.state.term_to_add+'&count='+this.state.count_to_add+'&commit=Add', {
+        fetch('http://damp-wave-78637.herokuapp.com/accounts/'+this.state.current_account.route+'/add_term?utf8=%E2%9C%93&body='+this.state.term_to_add+'&count='+this.state.count_to_add+'&commit=Add', {
           method: 'GET',
           headers: {
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
@@ -156,7 +177,7 @@ var SuperTwitBotBeta = React.createClass({
     },
 
     removeTerm: function (id) {
-      fetch('https://damp-wave-78637.herokuapp.com/accounts/'+this.state.current_account.route+'/destroy_term?term_id='+id+'', {
+      fetch('http://damp-wave-78637.herokuapp.com/accounts/'+this.state.current_account.route+'/destroy_term?term_id='+id+'', {
         method: 'GET',
         headers: {
           'Accept': 'text/html, application/xhtml+xml, application/xml',
@@ -200,7 +221,7 @@ var SuperTwitBotBeta = React.createClass({
     },
  
     _onPressButtonFOLLOW: function() {
-        fetch("http://localhost:3000/accounts/1/follow_tweeters", {method: "GET"})
+        fetch("http://damp-wave-78637.herokuapp.com/accounts/1/follow_tweeters", {method: "GET"})
         .then((response) => response.json())
         .then((responseData) => {
             AlertIOS.alert(
