@@ -87,10 +87,12 @@ var SuperTwitBotBeta = React.createClass({
         .then((responseData) => {
           this.setHead(this.state.user_headers);
           console.log("sethead!" + this.state.user_headers);
+        }).then(function(){
           this.getAccts();
-        })
+        }.bind(this))
         .done();
     },
+
     setHead: function (arr) {
       console.log(arr);
       var headers = {};
@@ -109,6 +111,7 @@ var SuperTwitBotBeta = React.createClass({
                   ['uid']: this.state.uid }
       console.log('HEADERS! ', headers);
       this.state.user_headers = headers;
+
       return headers;
     },
 
