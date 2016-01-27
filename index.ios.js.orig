@@ -33,7 +33,11 @@ var SuperTwitBotBeta = React.createClass({
     },
 
     componentWillMount: function () {
+<<<<<<< HEAD
+      fetch('https://damp-wave-78637.herokuapp.com/accounts/accounts/1.json')
+=======
       fetch('https://damp-wave-78637.herokuapp.com/accounts')
+>>>>>>> 773d72a61c83b63d9840d10f59b5afe5196152f8
         .then((response) => response.json())
         .then((responseData) => {
           console.log('responseData: ', responseData);
