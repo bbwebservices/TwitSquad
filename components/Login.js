@@ -21,6 +21,15 @@ var Login = React.createClass({
             title: 'Account Choice'
         })
 
+        // Add route id to each Account
+        var routeNum = 1
+        this.props.twitterAccounts.forEach(function (element) {
+        	element.route = routeNum;
+        	routeNum++;
+        })
+
+        console.log(this.props.twitterAccounts);
+
     },
 
     componentWillUnmount: function () {
@@ -31,7 +40,7 @@ var Login = React.createClass({
 		return (
             <View style={styles.container}>
 
-              <Text style={styles.introText}>Welcome to Super Twitter Bot Beta!</Text>
+              <Text style={styles.introText}>Welcome to TwitSquad Beta!</Text>
               <Text style={styles.intoSubText}>to continue, please enter your username and password</Text>
 
               <Text>Username:</Text>
@@ -50,7 +59,7 @@ var Login = React.createClass({
                  <Text>Sign Up</Text>  
                 </TouchableHighlight>
 
-                <TouchableHighlight style={styles.button} onPress={ this.props.getAccts, this.goToAccountsPage }>
+                <TouchableHighlight style={styles.button} onPress={ this.props.checkCreds }>
                  <Text>Login</Text>  
                 </TouchableHighlight>
 
@@ -72,7 +81,7 @@ var styles = StyleSheet.create({
     button: {
         backgroundColor: 'lightblue',
         padding: 10,
-        marginRight: 5,
+        marginRight: 10,
         marginLeft: 5,
         borderColor: '#b6b6b6',
         borderWidth: 1
@@ -84,10 +93,10 @@ var styles = StyleSheet.create({
     },
     textInput: {
         height: 40,
-        width: 200,
+        width: 300,
         borderColor: 'lightblue',
         borderWidth: 2,
-        marginBottom: 20,
+        marginBottom: 30,
         padding: 5,
         justifyContent: 'center',
         color: 'blue',
@@ -95,13 +104,14 @@ var styles = StyleSheet.create({
     },
     introText: {
         marginTop: 200,
+        marginBottom: 10,
         fontStyle: 'italic',
-        fontSize: 19,
+        fontSize: 25,
         color: 'blue'
     },
     intoSubText: {
-        fontSize: 14,
-        marginBottom: 30,
+        fontSize: 15,
+        marginBottom: 40,
         color: 'grey'
     }
 });
