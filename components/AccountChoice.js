@@ -13,24 +13,21 @@ var {
 var AccountChoice = React.createClass({
 
 	goToTweetPage: function (id) {
-		console.log(id)
+		this.props.saveId(id);
 		this.props.navigator.push({
         	component: TweetPage,
         	title: 'Account Management',
-        	// passProps: {
-        	// 	username: this.props.username,
-        	// 	password: this.props.password,
-        	// 	twitterAccounts: this.props.twitterAccounts,
-        	// 	currentAccount: this.props.currentAccount,
-        	// 	saveId: this.props.saveId
-        	// }
       	})
 	},
 
 	render: function () {
+
+		// create accounts list
+		var accountsList = this.props.twitterAccounts.map(function (acct) {
+								return <TouchableHighlight onPress={function(){ this.goToTweetPage(acct.name) }.bind(this)} style={styles.listItem}><Text>{acct.name}</Text></TouchableHighlight>
+							}.bind(this));
 		return (
 			<View style={styles.container}>
-
 				<View style={styles.introTextCont}>
 					<Text>Hello {this.props.username}!</Text>
 					<Text style={styles.introText}>Which Account Do You Want To Manage?</Text>
@@ -43,7 +40,7 @@ var AccountChoice = React.createClass({
 						scrollEventThrottle={200}
 						>
 						{this.props.twitterAccounts.map(function (acct) {
-							return <TouchableHighlight onPress={this.props.saveId, this.goToTweetPage} style={styles.listItem}><Text>{acct.name}</Text></TouchableHighlight>
+							return <TouchableHighlight onPress={function(){ this.goToTweetPage(acct.name) }.bind(this)} style={styles.listItem}><Text>{acct.name}</Text></TouchableHighlight>
 						}.bind(this))}
 					</ScrollView>
 					
