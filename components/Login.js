@@ -16,26 +16,28 @@ var Login = React.createClass({
 	
 	goToAccountsPage: function () {
 		console.log('CREDS', this.props)
-
+		this.props.checkCreds()
 		// **********THIS IS WHERE WE NEED TO CHECK THE CREDS**********
-		if(true){
+		if(this.props.twitterAccounts){
 			this.props.navigator.push({
 	            component: AccountChoice,
 	            title: 'Account Choice'
 	        })
-		} else {
-			AlertIOS.alert('sorry, ur creds suck!');
-		}
+	       
+	        // Add route id to each Account
+	        var routeNum = 1
+	        this.props.twitterAccounts.forEach(function (element) {
+	        	element.route = routeNum;
+	        	routeNum++;
+	        })
+
+        	console.log(this.props.twitterAccounts);
+	        return;
+		} 
       	
+      	this.goToAccountsPage();
 
-        // Add route id to each Account
-        var routeNum = 1
-        this.props.twitterAccounts.forEach(function (element) {
-        	element.route = routeNum;
-        	routeNum++;
-        })
-
-        console.log(this.props.twitterAccounts);
+        
 
     },
 
@@ -66,7 +68,7 @@ var Login = React.createClass({
                  <Text>Sign Up</Text>  
                 </TouchableHighlight>
 
-                <TouchableHighlight style={styles.button} onPress={ this.props.checkCreds, this.goToAccountsPage }>
+                <TouchableHighlight style={styles.button} onPress={ this.goToAccountsPage }>
                  <Text>Login</Text>  
                 </TouchableHighlight>
 
