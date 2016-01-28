@@ -15,35 +15,25 @@ var {
 var Login = React.createClass({
 	
 	goToAccountsPage: function () {
+
 	// **********THIS IS WHERE WE NEED TO CHECK THE CREDS**********
+		if(!this.props.accountsRetrieved){
+			return this.props.checkCreds(this.goToAccountsPage)
+		} 	
 
-		var p1 = new Promise(function(){
-			this.props.checkCreds(); 
-		}.bind(this)).then(function (value) {
-			
-				console.log('in nav');
-				this.props.navigator.push({
-		            component: AccountChoice,
-		            title: 'Account Choice'
-		        })
-		       
-		        // Add route id to each Account
-		        var routeNum = 1
-		        this.props.twitterAccounts.forEach(function (element) {
-		        	element.route = routeNum;
-		        	routeNum++;
-		        })
-		        return;
-			
-		}.bind(this)).catch(function (err) {
-			console.log('error: ', err)
-		})
-		 
-      
-    },
-
-    componentWillUnmount: function () {
-    	
+		console.log('in nav');
+		this.props.navigator.push({
+	        component: AccountChoice,
+	        title: 'Account Choice'
+	    })
+	   
+	    // Add route id to each Account
+	    var routeNum = 1
+	    this.props.twitterAccounts.forEach(function (element) {
+	    	element.route = routeNum;
+	    	routeNum++;
+	    })
+	
     },
 
 	render: function () {
