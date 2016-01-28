@@ -6,7 +6,8 @@
  
 var React = require('react-native');
 var AccountChoice = require('./components/AccountChoice.js');
-var Login = require('./components/Login.js')
+var Login = require('./components/Login.js');
+// var Promise = require('bluebird');
  
 var {
     AppRegistry,
@@ -40,7 +41,8 @@ var SuperTwitBotBeta = React.createClass({
         expiry: null,
         uid: null,
         client: null,
-        token_type: null
+        token_type: null,
+        accounts_retrieved: false
       }
     },
 
@@ -76,76 +78,84 @@ var SuperTwitBotBeta = React.createClass({
       this.setState({password: input});
     },
 
-    checkCreds: function () {  
-      fetch("http://damp-wave-78637.herokuapp.com/auth/sign_in?email="+this.state.username+"&password="+this.state.password+"", {method: "Post"})
-        .then((response) => {
-          this.setState({
-            user_headers: response.headers
+    checkCreds: function ( func ) {
+      var p1 = new Promise(
+        function (resolve, reject) {
+          fetch("http://damp-wave-78637.herokuapp.com/auth/sign_in?email="+this.state.username+"&password="+this.state.password+"", {method: "Post"})
+          .then((response) => {
+            this.setState({
+              user_headers: response.headers
+            })
           })
-          console.log('user_headers ', this.state.user_headers.map);
-        })
-        .then((responseData) => {
-          this.setHead(this.state.user_headers);
-          console.log("sethead!" + this.state.user_headers);
-        }).then(function(){
-          this.getAccts();
-        }.bind(this))
-        .done();
+          .done(function () {
+            resolve(this.setHead(this.state.user_headers, func));
+          }.bind(this));
+        }.bind(this)
+        
+      )
+      .then(function (data) {
+       console.log('in check creds resolve: ', data)
+      })
+      
     },
 
-    setHead: function (arr) {
-      console.log(arr);
-      var headers = {};
-      if(arr){
-        this.state.access_token = arr.map['access-token'];
-        this.state.client = arr.map['client'];
-        this.state.expiry = arr.map['expiry'];
-        this.state.token_type = arr.map['token-type'];
-        this.state.uid = arr.map['uid'];
-        console.log(this.state.access_token);
-      }
-      headers = { ['access-token']: this.state.access_token, 
-                  ['client']: this.state.client, 
-                  ['expiry']: this.state.expiry, 
-                  ['token-type']: this.state.token_type,
-                  ['uid']: this.state.uid }
-      console.log('HEADERS! ', headers);
-      this.state.user_headers = headers;
-
-      return headers;
+    setHead: function (arr, func) {
+      var p1 = new Promise(
+        function (resolve, reject) {
+          console.log('arr: ', arr);
+          var headers = {};
+          if(arr){
+            this.setState({
+              access_token: arr.map['access-token'][0],
+              client: arr.map['client'][0],
+              expiry: arr.map['expiry'][0],
+              token_type: arr.map['token-type'][0],
+              uid: arr.map['uid'][0]
+            })
+            
+          }
+          headers = { ['access-token']: this.state.access_token, 
+                      ['client']: this.state.client, 
+                      ['expiry']: this.state.expiry, 
+                      ['token-type']: this.state.token_type,
+                      ['uid']: this.state.uid }
+          
+          console.log('HEADERS! ', this.state.access_token, this.state.client, this.state.expiry, this.state.token_type, this.state.uid);
+          this.setState({
+            user_headers: headers
+          });
+          resolve(headers)
+        }.bind(this)
+        
+      )
+      .then(function (value) {
+        console.log('in head prom', value);
+        this.getAccts( value, func );
+      }.bind(this))
+      
     },
 
-    getAccts: function () {
-
-      console.log('get accts');
+    getAccts: function ( value, func ) {
+      console.log('get accts', value);
       fetch('http://damp-wave-78637.herokuapp.com/accounts', {
         method: 'GET',
-        headers: this.state.user_headers
+        headers: value
       })
-            .then((response) => response.json())
-            .then((responseData) => {
-              this.setState({
-                twitter_accounts: responseData
-              })
-            })
-            .done();
-      console.log('twitter accts: ', this.state.twitter_accounts);
-
-    },
-
-    setHeaders: function () {
-      fetch("http://damp-wave-78637.herokuapp.com/auth/sign_in?email="+this.state.username+"&password="+this.state.password+"", {method: "Post"})
-        .then((response) => {
-          this.setState({
-            user_headers: response.headers
-          })
-          console.log('user_headers ', this.state.user_headers.map);
-
-        })
+        .then((response) => response.json())
         .then((responseData) => {
-            console.log('State: ', this.state.user_headers.map['access-token'][0]);
+          this.setState({
+            twitter_accounts: responseData
+          })
         })
-        .done();
+        .done(function(){
+          console.log('ACCTS: ', this.state.twitter_accounts);
+          this.setState({
+            accounts_retrieved: true
+          })
+          func()
+        }.bind(this));
+        
+
     },
 
     addTerm: function (text) {
@@ -260,6 +270,7 @@ var SuperTwitBotBeta = React.createClass({
                    removeTerm={this.removeTerm}
                    checkCreds={this.checkCreds}
                    accessToken={this.state.access_token}
+                   accountsRetrieved={this.state.accounts_retrieved}
                    {...route.props} 
                    navigator={navigator} 
                    route={route} />
