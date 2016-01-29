@@ -10,18 +10,25 @@ var {
     View,
     TouchableHighlight,
     AlertIOS,
+    ActivityIndicatorIOS
 } = React;
 
 var Login = React.createClass({
 	
 	goToAccountsPage: function () {
 
-	// **********THIS IS WHERE WE NEED TO CHECK THE CREDS**********
+	// **********CHECK THE CREDS**********
 		if(!this.props.accountsRetrieved){
-			return this.props.checkCreds(this.goToAccountsPage)
-		} 	
-
+            this.props.isLoading(true);
+			return this.props.checkCreds(this.goToAccountsPage);
+            
+		} else if (this.props.accountsRetrieved === 'denied') {
+            return AlertIOS.alert('Sorry, your creds don\'t checkout!');
+        }
+        
+        this.props.isLoading(false);
 		console.log('in nav');
+
 		this.props.navigator.push({
 	        component: AccountChoice,
 	        title: 'Account Choice'
@@ -37,36 +44,46 @@ var Login = React.createClass({
     },
 
 	render: function () {
+
 		return (
             <View style={styles.container}>
 
-              <Text style={styles.introText}>Welcome to TwitSquad Beta!</Text>
-              <Text style={styles.intoSubText}>to continue, please enter your username and password</Text>
+                <Text style={styles.introText}>Welcome to TwitSquad Beta!</Text>
+                <Text style={styles.intoSubText}>to continue, please enter your username and password</Text>
 
-              <Text>Username:</Text>
-              <TouchableHighlight>
-                <TextInput style={styles.textInput} onChangeText={this.props.setUser} />    
-              </TouchableHighlight>
+                <Text>Username:</Text>
+                <TouchableHighlight>
+                    <TextInput style={styles.textInput} onChangeText={this.props.setUser} />    
+                </TouchableHighlight>
 
-              <Text>Password:</Text>
-              <TouchableHighlight>
-                <TextInput style={styles.textInput} onChangeText={this.props.setPassword} />    
-              </TouchableHighlight>
+                <Text>Password:</Text>
+                <TouchableHighlight>
+                    <TextInput style={styles.textInput} onChangeText={this.props.setPassword} />    
+                </TouchableHighlight>
 
-              <View style={styles.buttonCont}>
-                
+                <View style={styles.buttonCont}>
+
                 <TouchableHighlight style={styles.button}>
-                 <Text>Sign Up</Text>  
+                    <Text>Sign Up</Text>  
                 </TouchableHighlight>
 
                 <TouchableHighlight style={styles.button} onPress={ this.goToAccountsPage }>
-                 <Text>Login</Text>  
+                    <Text>Login</Text>  
                 </TouchableHighlight>
 
-              </View>
+                </View>
+
+                <View style={styles.loading}>
+                    <ActivityIndicatorIOS
+                        animating={this.props.animating}
+                        style={[styles.centering, {height: 80}]}
+                        size="large" /
+                    >
+                </View>
 
             </View>
         )
+        
 	}
 });
 
@@ -113,7 +130,10 @@ var styles = StyleSheet.create({
         fontSize: 15,
         marginBottom: 40,
         color: 'grey'
-    }
+    },
+    loading: {
+        justifyContent: 'center'
+    },
 });
 
 module.exports = Login;

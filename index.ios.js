@@ -7,7 +7,6 @@
 var React = require('react-native');
 var AccountChoice = require('./components/AccountChoice.js');
 var Login = require('./components/Login.js');
-// var Promise = require('bluebird');
  
 var {
     AppRegistry,
@@ -42,11 +41,13 @@ var SuperTwitBotBeta = React.createClass({
         uid: null,
         client: null,
         token_type: null,
-        accounts_retrieved: false
+        accounts_retrieved: false,
+        animating: false
       }
     },
 
     componentWillMount: function () {
+
       fetch('http://damp-wave-78637.herokuapp.com/accounts')
         .then((response) => response.json())
         .then((responseData) => {
@@ -55,9 +56,19 @@ var SuperTwitBotBeta = React.createClass({
           })
         })
         .done();
+
+    },
+
+    startLoader: function (value) {
+
+      this.setState({
+        animating: value
+      })
+
     },
 
     saveId: function (id) {
+
       var currAcct = this.state.twitter_accounts.filter(function (element) {
         if(element.name === id){
           return true;
@@ -68,17 +79,23 @@ var SuperTwitBotBeta = React.createClass({
         current_account: currAcct[0]
       })
       console.log('current account state', this.state);
+
     },
 
     setUser: function (input) {
+
       this.setState({username: input});
+
     },
 
     setPassword: function (input) {
+
       this.setState({password: input});
+
     },
 
-    checkCreds: function ( func ) {
+    checkCreds: function (func) {
+
       var p1 = new Promise(
         function (resolve, reject) {
           fetch("http://damp-wave-78637.herokuapp.com/auth/sign_in?email="+this.state.username+"&password="+this.state.password+"", {method: "Post"})
@@ -91,7 +108,7 @@ var SuperTwitBotBeta = React.createClass({
             resolve(this.setHead(this.state.user_headers, func));
           }.bind(this));
         }.bind(this)
-        
+
       )
       .then(function (data) {
        console.log('in check creds resolve: ', data)
@@ -100,6 +117,7 @@ var SuperTwitBotBeta = React.createClass({
     },
 
     setHead: function (arr, func) {
+      
       var p1 = new Promise(
         function (resolve, reject) {
           console.log('arr: ', arr);
@@ -126,16 +144,16 @@ var SuperTwitBotBeta = React.createClass({
           });
           resolve(headers)
         }.bind(this)
-        
       )
       .then(function (value) {
         console.log('in head prom', value);
         this.getAccts( value, func );
       }.bind(this))
-      
+
     },
 
     getAccts: function ( value, func ) {
+      
       console.log('get accts', value);
       fetch('http://damp-wave-78637.herokuapp.com/accounts', {
         method: 'GET',
@@ -147,7 +165,7 @@ var SuperTwitBotBeta = React.createClass({
             twitter_accounts: responseData
           })
         })
-        .done(function(){
+        .done(function () {
           console.log('ACCTS: ', this.state.twitter_accounts);
           this.setState({
             accounts_retrieved: true
@@ -155,7 +173,6 @@ var SuperTwitBotBeta = React.createClass({
           func()
         }.bind(this));
         
-
     },
 
     addTerm: function (text) {
@@ -164,7 +181,7 @@ var SuperTwitBotBeta = React.createClass({
       })
     },
 
-     addCount: function (text) {
+    addCount: function (text) {
       this.setState({
         count_to_add: text
       })
@@ -181,7 +198,6 @@ var SuperTwitBotBeta = React.createClass({
           headers: {
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
             'Content-Type': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-
           }
         })
       }
@@ -271,6 +287,8 @@ var SuperTwitBotBeta = React.createClass({
                    checkCreds={this.checkCreds}
                    accessToken={this.state.access_token}
                    accountsRetrieved={this.state.accounts_retrieved}
+                   isLoading={this.startLoader}
+                   animating={this.state.animating}
                    {...route.props} 
                    navigator={navigator} 
                    route={route} />
