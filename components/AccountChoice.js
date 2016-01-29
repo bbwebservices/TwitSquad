@@ -39,9 +39,7 @@ var AccountChoice = React.createClass({
 						onScroll={function(){console.log('scrolling!')}} 
 						scrollEventThrottle={200}
 						>
-						{this.props.twitterAccounts.map(function (acct) {
-							return <TouchableHighlight onPress={function(){ this.goToTweetPage(acct.name) }.bind(this)} style={styles.listItem}><Text>{acct.name}</Text></TouchableHighlight>
-						}.bind(this))}
+						{accountsList}
 					</ScrollView>
 					
 				</View>
