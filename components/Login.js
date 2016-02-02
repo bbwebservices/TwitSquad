@@ -34,7 +34,9 @@ var Login = React.createClass({
 		this.props.navigator.push({
 	        component: AccountChoice,
 	        title: 'Account Choice'
-	    })
+	    });
+
+        // this.props.navigator.pop();
 	   
 	    // Add route id to each Account
 	    var routeNum = 1

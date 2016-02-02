@@ -23,8 +23,10 @@ var AccountChoice = React.createClass({
 	render: function () {
 
 		// create accounts list
+		var keyNum = 0;
 		var accountsList = this.props.twitterAccounts.map(function (acct) {
-								return <TouchableHighlight onPress={function(){ this.goToTweetPage(acct.name) }.bind(this)} style={styles.listItem}><Text>{acct.name}</Text></TouchableHighlight>
+								keyNum++;
+								return <TouchableHighlight key={keyNum} onPress={function(){ this.goToTweetPage(acct.name) }.bind(this)} style={styles.listItem}><Text>{acct.name}</Text></TouchableHighlight>
 							}.bind(this));
 		return (
 			<View style={styles.container}>
