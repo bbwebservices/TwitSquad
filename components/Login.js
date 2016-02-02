@@ -16,18 +16,20 @@ var {
 var Login = React.createClass({
 	
 	goToAccountsPage: function () {
-
-	// **********CHECK THE CREDS**********
-		if(!this.props.accountsRetrieved){
+        if(this.props.firstAttempt) {
+            this.props.isFirstAttempt(false);
+        }		
+        if(!this.props.accountsRetrieved){
             this.props.isLoading(true);
 			return this.props.checkCreds(this.goToAccountsPage);
             
-		} else if (this.props.accountsRetrieved === 'denied') {
+		} else if (this.props.accountDenied) {
+            this.props.isLoading(false);
+            this.props.clean();
             return AlertIOS.alert('Sorry, your creds don\'t checkout!');
         }
-        
+
         this.props.isLoading(false);
-		console.log('in nav');
 
 		this.props.navigator.push({
 	        component: AccountChoice,
@@ -67,7 +69,7 @@ var Login = React.createClass({
                     <Text>Sign Up</Text>  
                 </TouchableHighlight>
 
-                <TouchableHighlight style={styles.button} onPress={ this.goToAccountsPage }>
+                <TouchableHighlight style={styles.button} onPress={this.goToAccountsPage}>
                     <Text>Login</Text>  
                 </TouchableHighlight>
 
@@ -77,8 +79,7 @@ var Login = React.createClass({
                     <ActivityIndicatorIOS
                         animating={this.props.animating}
                         style={[styles.centering, {height: 80}]}
-                        size="large" /
-                    >
+                        size="large" />
                 </View>
 
             </View>

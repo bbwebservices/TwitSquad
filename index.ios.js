@@ -42,21 +42,10 @@ var SuperTwitBotBeta = React.createClass({
         client: null,
         token_type: null,
         accounts_retrieved: false,
-        animating: false
+        account_denied: false,
+        animating: false,
+        firstAttempt: true
       }
-    },
-
-    componentWillMount: function () {
-
-      fetch('http://damp-wave-78637.herokuapp.com/accounts')
-        .then((response) => response.json())
-        .then((responseData) => {
-          this.setState({
-            twitter_accounts: responseData
-          })
-        })
-        .done();
-
     },
 
     startLoader: function (value) {
@@ -64,6 +53,24 @@ var SuperTwitBotBeta = React.createClass({
       this.setState({
         animating: value
       })
+
+    },
+
+    isFirstAttempt: function (value) {
+      this.setState({
+        firstAttempt: false
+      })
+    },
+
+    isAccountDenied: function (value) {
+      this.setState({
+        account_denied: value,
+      });
+    },
+
+    clean: function () {
+      this.replaceState(this.getInitialState());
+      console.log("cleaned up: ", this.state);
 
     },
 
@@ -83,37 +90,40 @@ var SuperTwitBotBeta = React.createClass({
     },
 
     setUser: function (input) {
-
       this.setState({username: input});
-
     },
 
     setPassword: function (input) {
-
       this.setState({password: input});
-
     },
 
     checkCreds: function (func) {
 
+      // Do i really need this Promise?
       var p1 = new Promise(
         function (resolve, reject) {
           fetch("http://damp-wave-78637.herokuapp.com/auth/sign_in?email="+this.state.username+"&password="+this.state.password+"", {method: "Post"})
           .then((response) => {
-            this.setState({
-              user_headers: response.headers
-            })
+            if(!response.headers.map.client) {
+              this.isAccountDenied(true);
+            } else {
+              this.setState({
+                account_denied: false,
+                user_headers: response.headers
+              })
+            }
+            console.log('heads: ', this.state.user_headers);
+            
           })
           .done(function () {
-            resolve(this.setHead(this.state.user_headers, func));
+              resolve(this.setHead(this.state.user_headers, func));
+            
           }.bind(this));
         }.bind(this)
-
       )
       .then(function (data) {
-       console.log('in check creds resolve: ', data)
+       
       })
-      
     },
 
     setHead: function (arr, func) {
@@ -130,13 +140,13 @@ var SuperTwitBotBeta = React.createClass({
               token_type: arr.map['token-type'][0],
               uid: arr.map['uid'][0]
             })
-            
           }
           headers = { ['access-token']: this.state.access_token, 
                       ['client']: this.state.client, 
                       ['expiry']: this.state.expiry, 
                       ['token-type']: this.state.token_type,
-                      ['uid']: this.state.uid }
+                      ['uid']: this.state.uid 
+                    }
           
           console.log('HEADERS! ', this.state.access_token, this.state.client, this.state.expiry, this.state.token_type, this.state.uid);
           this.setState({
@@ -164,6 +174,8 @@ var SuperTwitBotBeta = React.createClass({
           this.setState({
             twitter_accounts: responseData
           })
+          console.log('ACCTS: ', this.state.twitter_accounts);
+
         })
         .done(function () {
           console.log('ACCTS: ', this.state.twitter_accounts);
@@ -289,6 +301,10 @@ var SuperTwitBotBeta = React.createClass({
                    accountsRetrieved={this.state.accounts_retrieved}
                    isLoading={this.startLoader}
                    animating={this.state.animating}
+                   accountDenied={this.state.account_denied}
+                   isAccountDenied={this.isAccountDenied}
+                   clean={this.clean}
+                   isFirstAttempt={this.isFirstAttempt}
                    {...route.props} 
                    navigator={navigator} 
                    route={route} />
