@@ -78,6 +78,7 @@ var styles = StyleSheet.create({
 	listItem: {
 		width: 400,
 		height: 40,
+		flexDirection: 'row',
 		backgroundColor: 'lightblue',
 		borderBottomColor: 'lightblue',
 		justifyContent: 'center',
