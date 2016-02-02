@@ -20,8 +20,8 @@ var {
     Navigator
 } = React;
 
-var url1 = 'http://localhost:3000'
-var url2 = 'http://damp-wave-78637.herokuapp.com'
+var url1 = 'http://localhost:3000';
+var url2 = 'http://damp-wave-78637.herokuapp.com';
  
 var SuperTwitBotBeta = React.createClass({
 
@@ -48,12 +48,15 @@ var SuperTwitBotBeta = React.createClass({
       }
     },
 
-    startLoader: function (value) {
+    componentDidMount: function () {
+      this.replaceState(this.getInitialState());
+      console.log('LOGIN, YO', this.state);
+    },
 
+    startLoader: function (value) {
       this.setState({
         animating: value
       })
-
     },
 
     isFirstAttempt: function (value) {
@@ -70,8 +73,6 @@ var SuperTwitBotBeta = React.createClass({
 
     clean: function () {
       this.replaceState(this.getInitialState());
-      console.log("cleaned up: ", this.state);
-
     },
 
     saveId: function (id) {
@@ -182,7 +183,9 @@ var SuperTwitBotBeta = React.createClass({
           this.setState({
             accounts_retrieved: true
           })
-          func()
+          if(func){
+            func()
+          }
         }.bind(this));
         
     },
@@ -205,14 +208,17 @@ var SuperTwitBotBeta = React.createClass({
         console.log('term: ', this.state.term_to_add);
         console.log('count: ', this.state.count_to_add);
 
-        fetch('http://damp-wave-78637.herokuapp.com/accounts/'+this.state.current_account.route+'/add_term?utf8=%E2%9C%93&body='+this.state.term_to_add+'&count='+this.state.count_to_add+'&commit=Add', {
+        fetch('http://damp-wave-78637.herokuapp.com/accounts/'+this.state.current_account.id+'/add_term?utf8=%E2%9C%93&body='+this.state.term_to_add+'&count='+this.state.count_to_add+'&commit=Add', {
           method: 'GET',
           headers: {
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
             'Content-Type': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
           }
-        })
-      }
+        }).then(function (response) {
+          console.log('re-fetching terms: ', response);
+          this.getAccts();
+        }
+      )}
       else {
         console.log('pls add text');
       }
@@ -227,55 +233,8 @@ var SuperTwitBotBeta = React.createClass({
         }
       })
     },
-  
-    _onPressButtonTWEET: function() {
-        fetch("http://localhost:3000/accounts/1/send_tweet", {method: "GET"})
-        .then((response) => response.json())
-        .then((responseData) => {
-            AlertIOS.alert(
-                "GET Response",
-                "Search Query -> " + responseData
-            )
-        })
-        .done();
-    }, 
-    _onPressButtonFAVE: function() {
-        fetch("http://localhost:3000/accounts/1/favorite_tweet", {method: "GET"})
-        .then((response) => response.json())
-        .then((responseData) => {
-            AlertIOS.alert(
-                "GET Response",
-                "Search Query -> " + responseData
-            )
-        })
-        .done();
-    },
-    _onPressButtonRETWEET: function() {
-        fetch("http://localhost:3000/accounts/1/retweets", {method: "GET"})
-        .then((response) => response.json())
-        .then((responseData) => {
-            AlertIOS.alert(
-                "GET Response",
-                "Search Query -> " + responseData.search
-            )
-        })
-        .done();
-    },
- 
-    _onPressButtonFOLLOW: function() {
-        fetch("http://damp-wave-78637.herokuapp.com/accounts/1/follow_tweeters", {method: "GET"})
-        .then((response) => response.json())
-        .then((responseData) => {
-            AlertIOS.alert(
-                "GET Response",
-                "Search Query -> " + responseData.search
-            )
-        })
-        .done();
-    },
 
     _renderScene: function (route, navigator) {
-
       var Component = route.component;
       var username = this.state.username;
       var password = this.state.password;
