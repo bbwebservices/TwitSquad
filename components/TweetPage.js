@@ -16,9 +16,11 @@ var TweetPage = React.createClass({
 		console.log('props', this.props)
 
 		// create terms list
+		var keyNum = 0;
 		var terms = this.props.currentAccount.terms.map(function (element) {
+			keyNum++;
 			return (
-				<View style={styles.term}>
+				<View key={keyNum} style={styles.term}>
 					<Text>{element.body}</Text>
 					<TouchableHighlight>
 						<Text>{element.count}</Text>
